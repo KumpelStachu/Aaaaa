@@ -16,7 +16,7 @@ type UseSession<R> =
 	  }
 
 export default function useSession<R extends boolean = false>(): UseSession<R> {
-	const { data, isLoading } = trpc.auth.session.useQuery(undefined)
+	const { data, isLoading } = trpc.auth.session.useQuery()
 	const utils = trpc.useContext()
 
 	return {

@@ -8,6 +8,119 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Place {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  location    String
+  author      User     @relation(fields: [userId], references: [id])
+  userId      String
+  likes       Int      @default(0)
+  difficulty  Int
+  date        DateTime @default(now())
+  public      Boolean  @default(false)
+
+  VisitedPlace VisitedPlace[]
+  LikePlace    LikePlace[]
+  CommentPlace CommentPlace[]
+  QrCodes      QrCodes[]
+  PhotosPlace  PhotosPlace[]
+  placeRoute   placeRoute[]
+}
+
+model CommentPlace {
+  id          String        @id @default(cuid())
+  author      User          @relation(fields: [userId], references: [id])
+  comment     String
+  userId      String
+  likes       Int           @default(0)
+  place       Place         @relation(fields: [placeId], references: [id])
+  LikeComment LikeComment[]
+  placeId     String
+}
+
+model LikePlace {
+  id      String @id @default(cuid())
+  user    User   @relation(fields: [userId], references: [id])
+  place   Place  @relation(fields: [placeId], references: [id])
+  userId  String
+  placeId String
+}
+
+model LikeComment {
+  id             String       @id @default(cuid())
+  user           User         @relation(fields: [userId], references: [id])
+  comment        CommentPlace @relation(fields: [commentPlaceId], references: [id])
+  userId         String
+  commentPlaceId String
+}
+
+model LikeRoute {
+  id      String @id @default(cuid())
+  user    User   @relation(fields: [userId], references: [id])
+  route   Route  @relation(fields: [routeId], references: [id])
+  userId  String
+  routeId String
+}
+
+model VisitedPlace {
+  id      String   @id @default(cuid())
+  place   Place    @relation(fields: [placeId], references: [id])
+  placeId String
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String
+  date    DateTime @default(now())
+}
+
+model QrCodes {
+  id      String   @id @default(cuid())
+  place   Place    @relation(fields: [placeId], references: [id])
+  value   String   @unique @default(uuid())
+  data    DateTime @default(now())
+  placeId String
+}
+
+model PhotosPlace {
+  id      String @id @default(cuid())
+  place   Place  @relation(fields: [placeId], references: [id])
+  url     String
+  placeId String
+}
+
+model Route {
+  id           String         @id @default(cuid())
+  name         String
+  author       User           @relation(fields: [userId], references: [id])
+  difficulty   Int
+  description  String
+  public       Boolean        @default(false)
+  price        Int
+  date         DateTime       @default(now())
+  userId       String
+  placeRoute   placeRoute[]
+  commentRoute commentRoute[]
+  LikeRoute    LikeRoute[]
+}
+
+model placeRoute {
+  id      String @id @default(cuid())
+  place   Place  @relation(fields: [placeId], references: [id])
+  route   Route  @relation(fields: [routeId], references: [id])
+  index   Int
+  placeId String
+  routeId String
+}
+
+model commentRoute {
+  id      String @id @default(cuid())
+  author  User   @relation(fields: [userId], references: [id])
+  route   Route  @relation(fields: [routeId], references: [id])
+  comment String
+  likes   Int    @default(0)
+  userId  String
+  routeId String
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -42,9 +155,18 @@ model User {
   emailVerified DateTime?
   image         String?
   admin         Boolean   @default(false)
+  points        Int       @default(0)
 
-  accounts Account[]
-  sessions Session[]
+  accounts     Account[]
+  sessions     Session[]
+  Place        Place[]
+  CommentPlace CommentPlace[]
+  VisitedPlace VisitedPlace[]
+  LikePlace    LikePlace[]
+  LikeComment  LikeComment[]
+  Route        Route[]
+  commentRoute commentRoute[]
+  LikeRoute    LikeRoute[]
 }
 
 model VerificationToken {

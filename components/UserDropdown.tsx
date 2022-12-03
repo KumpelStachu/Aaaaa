@@ -14,7 +14,7 @@ export default function UserDropdown() {
 				onClick={() => signIn('discord')}
 				leftIcon={<IconBrandDiscord size={20} />}
 			>
-				Log in
+				Zaloguj się
 			</Button>
 		)
 	}
@@ -22,19 +22,19 @@ export default function UserDropdown() {
 	return (
 		<Menu width={200} position="bottom-end" withinPortal>
 			<Menu.Target>
-				<ActionIcon size="lg" variant="default">
-					<IconUser size={20} />
-				</ActionIcon>
+				<Button variant="default" rightIcon={<IconUser size={20} />}>
+					{session.user.name}
+				</Button>
 			</Menu.Target>
 			<Menu.Dropdown>
-				<Menu.Item component={Link} href={`/u/${session.user.name}`} icon={<IconUser size={16} />}>
-					My profile
+				{/* <Menu.Item component={Link} href={`/u/${session.user.name}`} icon={<IconUser size={16} />}>
+					Mój profil
 				</Menu.Item>
 
-				<Menu.Divider />
+				<Menu.Divider /> */}
 
 				<Menu.Item icon={<IconLogout size={16} />} onClick={() => signOut()}>
-					Log out
+					Wyloguj się
 				</Menu.Item>
 			</Menu.Dropdown>
 		</Menu>
